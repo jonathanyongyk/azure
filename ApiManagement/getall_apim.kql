@@ -1,0 +1,8 @@
+resources
+| where type =~ 'microsoft.apimanagement/service'
+| extend NoOfAvailabilityZone = iif(isnull(zones), 0, array_length(zones))
+| project resourceId = id, resourceName = name, location, skuName = sku.name, availabilityZone = zones, NoOfAvailabilityZone, resourceGroup, subscriptionId
+| join kind=leftouter (resourcecontainers 
+| where type == 'microsoft.resources/subscriptions' 
+| project subscriptionId, subscriptionName = name) on $left.subscriptionId == $right.subscriptionId
+| project subscriptionId, subscriptionName, resourceGroup, resourceName, location, skuName, availabilityZone, NoOfAvailabilityZone, resourceId
