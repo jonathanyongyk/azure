@@ -24,3 +24,7 @@ This script require one argument which is the subscription id. You may pass to t
 The script will generate two CSV files in the current directory. The first file is the list of App Service Plan (**AppServicePlan.csv**) and the second file is the list of Web Apps in the App Service Plan (**WebApp.csv**).
 You can then open the files in Excel for further analysis .
 
+# Other options
+You can also find the equivalant KQL in **getall_asp.kql** and **getall_webapp.kql** to run in Azure Resource Graph Explorer.
+
+

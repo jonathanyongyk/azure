@@ -1,0 +1,6 @@
+resources
+| where type =~ 'microsoft.web/serverfarms'
+| project subscriptionId, resourceGroup, name, location, skuName = sku.name, zoneRedundant = properties.zoneRedundant, numberOfWorkers = properties.numberOfWorkers, id
+| join kind=leftouter (resourcecontainers | where type == 'microsoft.resources/subscriptions' | project subscriptionId, subscriptionName = name) on subscriptionId
+| project subscriptionId, subscriptionName, resourceGroup, resourceName = name, location, skuName, zoneRedundant, numberOfWorkers, resourceId = id
+| order by  resourceGroup asc , resourceName asc 

@@ -1,0 +1,12 @@
+Resources
+| where type =~ 'microsoft.web/sites'
+| extend appServicePlanId = tostring(properties.serverFarmId)
+| project resourceGroup, resourceName=name, appServicePlanId, subscriptionId
+| join kind=leftouter (
+    resourcecontainers
+    | where type == 'microsoft.resources/subscriptions'
+    | project subscriptionId, subscriptionName = name
+) on $left.subscriptionId == $right.subscriptionId
+| extend appServicePlanName = tostring(split(appServicePlanId, '/')[8])
+| project subscriptionId, subscriptionName, resourceGroup, resourceName, appServicePlanId, appServicePlanName
+| order by resourceGroup asc , resourceName asc 
