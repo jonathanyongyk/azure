@@ -41,11 +41,7 @@ if ($apimInstances) {
     Write-Host "No API Management instances found in subscription $SubscriptionId."
 }
 
-#$allApimInstances
 
-if($Path -eq $null) {
-    $Path = "C:\Temp\AllApimInstances.csv"
-}
 # Export the results to a CSV file if the path is provided
 if ($Path) {
     $allApimInstances | Export-Csv -Path $Path
