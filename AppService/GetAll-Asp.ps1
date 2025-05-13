@@ -27,14 +27,30 @@ foreach ($resourceGroup in $resourceGroups) {
         $raw = (az appservice plan show --name $appServicePlan.Name -g $resourceGroup.ResourceGroupName) | out-string
         $asp = convertfrom-json $raw
         # Add the details to the allAsp array
+
+        $osType = "Windows"
+        if($appServicePlan.kind -eq "linux"){
+            $osType = "linux"
+        }
+        elseif ($appServicePlan.kind -eq "app") {
+            $osType = "windows"
+        }
+        else {
+            $osType = $appServicePlan.kind
+        }
+
+
         $allAsp += [PSCustomObject]@{
             SubscriptionId   = $subscription.Subscription.Id
             SubscriptionName = $subscription.Subscription.Name
             ResourceGroupName = $resourceGroup.ResourceGroupName
             ResourceName     = $appServicePlan.Name
-            Plan             = $appServicePlan.Sku.Name
+            Location         = $appServicePlan.Location
+            SkuName          = $appServicePlan.Sku.Name
             ZoneRedundant    = if ($asp.properties.ZoneRedundant) { "Enabled" } else { "Not Enabled" }
-            ResourceId       = $appServicePlan.Id            
+            OS               =  $osType
+            InstanceCount    =  $appServicePlan.Sku.capacity      
+            ResourceId       = $appServicePlan.Id                            
         }
 
         # Get all web apps in the app service plan
@@ -42,6 +58,7 @@ foreach ($resourceGroup in $resourceGroups) {
 
         foreach ($webApp in $webApps) {
             # Add the details to the allWebs array
+
             $allWebs += [PSCustomObject]@{
                 ResourceGroupName = $resourceGroup.ResourceGroupName
                 WebAppName       = $webApp.Name
