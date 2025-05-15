@@ -32,6 +32,7 @@ if ($apimInstances) {
             ResourceName     = $_.Name
             Location         = $_.Location
             SkuName          = $_.Sku
+            InstanceCount    = $_.Capacity
             AvailabilityZone = $_.Zone -join ','
             NoOfAvailabilityZone = $_.Zone.Count
             ResourceId       = $_.Id
