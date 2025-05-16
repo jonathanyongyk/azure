@@ -1,0 +1,10 @@
+Resources
+ | where type == "microsoft.containerservice/managedclusters"
+ | extend properties.agentPoolProfiles
+ | project subscriptionId, name, pool = (properties.agentPoolProfiles)
+ | mv-expand pool
+ | project clusterName = name, nodePoolName = tostring(pool.name), osType = pool.osType, osSku = pool.osSKU, 
+           mode = pool.mode, availabilityZones = pool.availabilityZones, 
+           noOfAvailabilityZone = array_length(pool.availabilityZones), 
+           currentOrchestratorVersion = pool.currentOrchestratorVersion
+ | order by clusterName asc, nodePoolName asc

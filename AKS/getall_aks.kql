@@ -1,0 +1,15 @@
+Resources
+| where type == "microsoft.containerservice/managedclusters"
+| project
+    subscriptionId,
+    resourceGroup,
+    resourceName = name,
+    location,
+    version = properties.currentKubernetesVersion,
+    sku = sku.tier,
+    resourceId = id
+| join kind=leftouter (resourcecontainers 
+|    where type == 'microsoft.resources/subscriptions' 
+|    project subscriptionId, subscriptionName = name) on $left.subscriptionId == $right.subscriptionId
+| project subscriptionId, subscriptionName, resourceGroup, resourceName, location, version, sku, resourceId    
+| order by  resourceGroup asc, resourceName asc
